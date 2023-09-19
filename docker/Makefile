@@ -120,5 +120,3 @@ trivy:
 	docker run --rm  -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --exit-code 0 $(IMAGE_NAME):$(IMAGE_TAG)
 
 .DEFAULT_GOAL := help
-
-
