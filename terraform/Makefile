@@ -4,7 +4,7 @@ include $(ENV)
 export
 
 #########################################
-# TF Makefile: v1.36
+# TF Makefile
 #########################################
 
 # TODO: Solve case when .env does not exist.
@@ -13,8 +13,8 @@ export
 # SHELL := /bin/bash
 
 # Define live updates
-MAKE_REPOSITORY := https://github.com/thereisnotime/xxMake/terraform/Makefile
-MAKE_VERSION := 1.36
+MAKE_REPOSITORY := https://raw.githubusercontent.com/thereisnotime/xxMake/master/terraform/Makefile
+MAKE_VERSION := 1.37
 
 # Define variables
 TF_MORE_ARGS := -compact-warnings
@@ -31,34 +31,44 @@ COLOR_YELLOW := \033[0;33m
 .PHONY: help
 help:
 	@echo "$(COLOR_GREEN)Available targets:$(COLOR_DEFAULT)"
-	@echo "  $(COLOR_YELLOW)init$(COLOR_DEFAULT)      Initialize Terraform"
-	@echo "  $(COLOR_YELLOW)validate$(COLOR_DEFAULT)  Validate Terraform configuration"
-	@echo "  $(COLOR_YELLOW)fmt$(COLOR_DEFAULT)       Format Terraform configuration"
-	@echo "  $(COLOR_YELLOW)plan$(COLOR_DEFAULT)      Generate Terraform plan"
-	@echo "  $(COLOR_YELLOW)apply$(COLOR_DEFAULT)     Apply Terraform changes"
-	@echo "  $(COLOR_YELLOW)destroy$(COLOR_DEFAULT)   Destroy Terraform resources"
-	@echo "  $(COLOR_YELLOW)taint$(COLOR_DEFAULT)     Taint Terraform resources"
-	@echo "  $(COLOR_YELLOW)taintm$(COLOR_DEFAULT)    Taint whole Terraform module"
-	@echo "  $(COLOR_YELLOW)untaint$(COLOR_DEFAULT)   Untaint Terraform resources"
-	@echo "  $(COLOR_YELLOW)console$(COLOR_DEFAULT)   Open Terraform console"
-	@echo "  $(COLOR_YELLOW)clean$(COLOR_DEFAULT)     Clean up Terraform artifacts"
-	@echo "  $(COLOR_YELLOW)graph$(COLOR_DEFAULT)     Generates graph of all dependencies from the plan"
-	@echo "  $(COLOR_YELLOW)docs$(COLOR_DEFAULT)      Generates documentation (README.md) for the modules"
-	@echo "  $(COLOR_YELLOW)cost$(COLOR_DEFAULT)      Calculate estimated infrastructure costs"
-	@echo "  $(COLOR_YELLOW)tfsec$(COLOR_DEFAULT)     Run tfsec to check for security issues"
-	@echo "  $(COLOR_YELLOW)semgrep$(COLOR_DEFAULT)   Run semgrep to check for security issues on the current folder (FAST)"
-	@echo "  $(COLOR_YELLOW)kics$(COLOR_DEFAULT)      Runs KICS to perform SAST on the code"
-	@echo "  $(COLOR_YELLOW)providers$(COLOR_DEFAULT) Lists TF providers and their module dependencies (FAST)"
-	@echo "  $(COLOR_YELLOW)megalint$(COLOR_DEFAULT)  Run Mega Linter on the whole repo (SLOW)"
-	@echo "  $(COLOR_YELLOW)info$(COLOR_DEFAULT)      Shows providers, output, state and more"
-	@echo "  $(COLOR_YELLOW)tfk8s$(COLOR_DEFAULT)     Converts K8s yaml 'input.yaml' to Terraform resource 'converted.tf'"
-	@echo "  $(COLOR_YELLOW)req$(COLOR_DEFAULT)       Checks local dependency requirements"
-	@echo "  $(COLOR_YELLOW)rmstate$(COLOR_DEFAULT)   Deletes the remote state. Use with caution!"
-	@echo "  $(COLOR_YELLOW)upgrade$(COLOR_DEFAULT)   Performs terraform init -upgrade"
+	@echo "  $(COLOR_YELLOW)init$(COLOR_DEFAULT)        Initialize Terraform"
+	@echo "  $(COLOR_YELLOW)validate$(COLOR_DEFAULT)    Validate Terraform configuration"
+	@echo "  $(COLOR_YELLOW)fmt$(COLOR_DEFAULT)         Format Terraform configuration"
+	@echo "  $(COLOR_YELLOW)plan$(COLOR_DEFAULT)        Generate Terraform plan"
+	@echo "  $(COLOR_YELLOW)apply$(COLOR_DEFAULT)       Apply Terraform changes"
+	@echo "  $(COLOR_YELLOW)destroy$(COLOR_DEFAULT)     Destroy Terraform resources"
+	@echo "  $(COLOR_YELLOW)taint$(COLOR_DEFAULT)       Taint Terraform resources"
+	@echo "  $(COLOR_YELLOW)taintm$(COLOR_DEFAULT)      Taint whole Terraform module"
+	@echo "  $(COLOR_YELLOW)untaint$(COLOR_DEFAULT)     Untaint Terraform resources"
+	@echo "  $(COLOR_YELLOW)console$(COLOR_DEFAULT)     Open Terraform console"
+	@echo "  $(COLOR_YELLOW)clean$(COLOR_DEFAULT)       Clean up Terraform artifacts"
+	@echo "  $(COLOR_YELLOW)graph$(COLOR_DEFAULT)       Generates graph of all dependencies from the plan"
+	@echo "  $(COLOR_YELLOW)docs$(COLOR_DEFAULT)        Generates documentation (README.md) for the modules"
+	@echo "  $(COLOR_YELLOW)cost$(COLOR_DEFAULT)        Calculate estimated infrastructure costs"
+	@echo "  $(COLOR_YELLOW)tfsec$(COLOR_DEFAULT)       Run tfsec to check for security issues"
+	@echo "  $(COLOR_YELLOW)semgrep$(COLOR_DEFAULT)     Run semgrep to check for security issues on the current folder (FAST)"
+	@echo "  $(COLOR_YELLOW)kics$(COLOR_DEFAULT)        Runs KICS to perform SAST on the code"
+	@echo "  $(COLOR_YELLOW)providers$(COLOR_DEFAULT)   Lists TF providers and their module dependencies (FAST)"
+	@echo "  $(COLOR_YELLOW)megalint$(COLOR_DEFAULT)    Run Mega Linter on the whole repo (SLOW)"
+	@echo "  $(COLOR_YELLOW)info$(COLOR_DEFAULT)        Shows providers, output, state and more"
+	@echo "  $(COLOR_YELLOW)tfk8s$(COLOR_DEFAULT)       Converts K8s yaml 'input.yaml' to Terraform resource 'converted.tf'"
+	@echo "  $(COLOR_YELLOW)req$(COLOR_DEFAULT)         Checks local dependency requirements"
+	@echo "  $(COLOR_YELLOW)rmstate$(COLOR_DEFAULT)     Deletes the remote state. Use with caution!"
+	@echo "  $(COLOR_YELLOW)upgrade$(COLOR_DEFAULT)     Performs terraform init -upgrade"
+	@echo "  $(COLOR_YELLOW)update-self$(COLOR_DEFAULT) Updates Makefile to latest"
 
-.PHONE: check-env
+.PHONY: check-env
 check-env:
 	@test -f .env || (echo "ERROR: .env file not found." && exit 1)
+
+.PHONY: update-self
+update-self:
+	@echo "$(COLOR_GREEN)Updating Makefile...(COLOR_DEFAULT)"
+	@CURRENT_VERSION=$(shell grep 'MAKE_VERSION := ' Makefile | cut -d ' ' -f 3)
+	@curl -o Makefile.new $(MAKE_REPOSITORY)
+	@NEW_VERSION=$(shell grep 'MAKE_VERSION := ' Makefile.new | cut -d ' ' -f 3)
+	@echo "$(COLOR_GREEN)from version $$CURRENT_VERSION to $$NEW_VERSION$(COLOR_DEFAULT)"
+	@mv Makefile.new Makefile
 
 .PHONY: init
 init: check-env
