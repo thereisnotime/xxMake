@@ -14,7 +14,7 @@ export
 
 # Define live updates
 MAKE_REPOSITORY := https://raw.githubusercontent.com/thereisnotime/xxMake/master/terraform/Makefile
-MAKE_VERSION := 1.40
+MAKE_VERSION := 1.41
 
 # Define variables
 TF_MORE_ARGS := -compact-warnings
@@ -71,11 +71,11 @@ update-self:
 	echo "New MAKE_VERSION is $(COLOR_GREEN)$$NEW_VERSION$(COLOR_DEFAULT)"
 	@HIGHEST_VERSION=$$(bash -c "echo -e \"$$CURRENT_VERSION\n$$NEW_VERSION\" | sort -V | tail -n 1"); \
 	if [ "$$HIGHEST_VERSION" = "$$NEW_VERSION" ]; then \
-		echo "$(COLOR_YELLOW)Updating Makefile... Done$(COLOR_DEFAULT)"; \
-		mv Makefile.new Makefile; \
-	else \
-		echo "Current version is $(COLOR_YELLOW)up-to-date$(COLOR_DEFAULT) no need for update."; \
+		echo "Current version is $(COLOR_GREEN)up-to-date$(COLOR_DEFAULT) no need for update."; \
 		rm Makefile.new; \
+	else \
+		echo "$(COLOR_GREEN)Updating Makefile... Done$(COLOR_DEFAULT)"; \
+		mv Makefile.new Makefile; \
 	fi
 
 .PHONY: init
