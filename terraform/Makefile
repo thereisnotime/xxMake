@@ -63,15 +63,16 @@ check-env:
 
 .PHONY: update-self
 update-self:
-	@echo "Fetching current and new MAKE_VERSION..."
-	@curl --connect-timeout 5 -H 'Cache-Control: no-cache, no-store' --silent -o Makefile.new $(MAKE_REPOSITORY)
-	@CURRENT_VERSION_PRINT=$$(grep '^MAKE_VERSION := ' Makefile | cut -d ' ' -f 3); \
-	CURRENT_VERSION_COMPARE=$$(echo $$CURRENT_VERSION_PRINT | tr -d '.'); \
-	echo "Current MAKE_VERSION is $(COLOR_YELLOW)$$CURRENT_VERSION_PRINT$(COLOR_DEFAULT)"
-	@NEW_VERSION_PRINT=$$(grep '^MAKE_VERSION := ' Makefile.new | cut -d ' ' -f 3); \
-	NEW_VERSION_COMPARE=$$(echo $$NEW_VERSION_PRINT | tr -d '.'); \
-	echo "New MAKE_VERSION is $(COLOR_GREEN)$$NEW_VERSION_PRINT$(COLOR_DEFAULT)"
-	@if [ $$NEW_VERSION_COMPARE -gt $$CURRENT_VERSION_COMPARE ]; then \
+	@echo "Fetching current and new MAKE_VERSION..."; \
+	curl --connect-timeout 5 -H 'Cache-Control: no-cache, no-store' --silent -o Makefile.new $(MAKE_REPOSITORY); \
+	CURRENT_VERSION_DOT=$$(grep '^MAKE_VERSION := ' Makefile | awk '{print $$3}'); \
+	CURRENT_VERSION=$$(echo "$$CURRENT_VERSION_DOT" | tr -d '.'); \
+	NEW_VERSION_DOT=$$(grep '^MAKE_VERSION := ' Makefile.new | awk '{print $$3}'); \
+	NEW_VERSION=$$(echo "$$NEW_VERSION_DOT" | tr -d '.'); \
+	echo "Current MAKE_VERSION is $(COLOR_YELLOW)$$CURRENT_VERSION_DOT$(COLOR_DEFAULT)"; \
+	echo "New MAKE_VERSION is $(COLOR_GREEN)$$NEW_VERSION_DOT$(COLOR_DEFAULT)"; \
+	IS_NEWER=$$(awk 'BEGIN {print (ARGV[1] < ARGV[2])}' $$CURRENT_VERSION $$NEW_VERSION); \
+	if [ $$IS_NEWER -eq 1 ]; then \
 		echo "$(COLOR_GREEN)Updating Makefile from version $(COLOR_YELLOW)$$CURRENT_VERSION_DOT$(COLOR_GREEN) to $$NEW_VERSION_DOT$(COLOR_DEFAULT)"; \
 		mv Makefile.new Makefile; \
 	else \
