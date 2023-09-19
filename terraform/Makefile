@@ -14,7 +14,7 @@ export
 
 # Define live updates
 MAKE_REPOSITORY := https://raw.githubusercontent.com/thereisnotime/xxMake/master/terraform/Makefile
-MAKE_VERSION := 1.43
+MAKE_VERSION := 1.44
 
 # Define variables
 TF_MORE_ARGS := -compact-warnings
@@ -64,17 +64,18 @@ check-env:
 .PHONY: update-self
 update-self:
 	@echo "Fetching current and new MAKE_VERSION..."
-	@curl -H 'Cache-Control: no-cache, no-store' --silent -o Makefile.new $(MAKE_REPOSITORY)?$(date +%s)
-	@CURRENT_VERSION=$$(bash -c "grep '^MAKE_VERSION := ' Makefile | cut -d ' ' -f 3"); \
-	echo "Current MAKE_VERSION is $(COLOR_YELLOW)$$CURRENT_VERSION$(COLOR_DEFAULT)"
-	@NEW_VERSION=$$(bash -c "grep '^MAKE_VERSION := ' Makefile.new | cut -d ' ' -f 3"); \
-	echo "New MAKE_VERSION is $(COLOR_GREEN)$$NEW_VERSION$(COLOR_DEFAULT)"
-	@HIGHEST_VERSION=$$(bash -c "echo -e \"$$CURRENT_VERSION\n$$NEW_VERSION\" | sort -V | tail -n 1"); \
-	if [ "$$HIGHEST_VERSION" = "$$NEW_VERSION" ]; then \
-		echo "$(COLOR_GREEN)Updating Makefile... Done$(COLOR_DEFAULT)"; \
+	@curl --connect-timeout 5 -H 'Cache-Control: no-cache, no-store' --silent -o Makefile.new $(MAKE_REPOSITORY)
+	@CURRENT_VERSION_PRINT=$$(grep '^MAKE_VERSION := ' Makefile | cut -d ' ' -f 3); \
+	CURRENT_VERSION_COMPARE=$$(echo $$CURRENT_VERSION_PRINT | tr -d '.'); \
+	echo "Current MAKE_VERSION is $(COLOR_YELLOW)$$CURRENT_VERSION_PRINT$(COLOR_DEFAULT)"
+	@NEW_VERSION_PRINT=$$(grep '^MAKE_VERSION := ' Makefile.new | cut -d ' ' -f 3); \
+	NEW_VERSION_COMPARE=$$(echo $$NEW_VERSION_PRINT | tr -d '.'); \
+	echo "New MAKE_VERSION is $(COLOR_GREEN)$$NEW_VERSION_PRINT$(COLOR_DEFAULT)"
+	@if [ $$NEW_VERSION_COMPARE -gt $$CURRENT_VERSION_COMPARE ]; then \
+		echo "$(COLOR_GREEN)Updating Makefile from version $(COLOR_YELLOW)$$CURRENT_VERSION_PRINT$(COLOR_GREEN) to $$NEW_VERSION_PRINT$(COLOR_DEFAULT)"; \
 		mv Makefile.new Makefile; \
 	else \
-		echo "Current version is $(COLOR_GREEN)up-to-date$(COLOR_DEFAULT) no need for update."; \
+		echo "Current version is $(COLOR_GREEN)up-to-date$(COLOR_DEFAULT). No need for update."; \
 		rm Makefile.new; \
 	fi
 
