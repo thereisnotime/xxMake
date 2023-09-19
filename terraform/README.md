@@ -6,6 +6,10 @@ Biased Makefile for easier Terraform project management, optimization, troublesh
 
 Place it in your Terraform project folder next to your main.tf or add a template that references it from the root of your repository in case you have multiple projects.
 
+### Infracost
+
+If you want to use infracost, make sure to have the $HOME/.config/infracost/credentials.yml file with the API key inside.
+
 ## Installation
 
 Just place the file in your project:

@@ -204,7 +204,7 @@ infracost: cost
 .PHONY: cost
 cost:
 	@echo "$(COLOR_YELLOW)Calculating estimated infrastructure costs with infracost...$(COLOR_DEFAULT)"
-	infracost breakdown --path "$(PWD)" --show-skipped
+	docker run --rm -t -v "$(PWD)":/src -v ~/.config/infracost:/root/.config/infracost infracost/infracost breakdown --path "/src" --show-skipped
 
 .PHONY: kics
 kics:
