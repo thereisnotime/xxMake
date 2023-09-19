@@ -1,0 +1,28 @@
+name: Lint Makefiles
+
+on:
+  push:
+    paths:
+      - '**/Makefile'
+  pull_request:
+    paths:
+      - '**/Makefile'
+
+jobs:
+  lint-makefiles:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v3
+
+      - name: Find and lint Makefiles
+        run: |
+          # Find all Makefiles in the repository
+          find . -name Makefile -type f -print0 | while IFS= read -r -d '' makefile; do
+            make -n -f "$makefile" > /dev/null
+            if [ $? -ne 0 ]; then
+              echo "Linting failed for $makefile"
+              exit 1
+            fi
+          done
