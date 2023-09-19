@@ -14,7 +14,7 @@ export
 
 # Define live updates
 MAKE_REPOSITORY := https://raw.githubusercontent.com/thereisnotime/xxMake/master/terraform/Makefile
-MAKE_VERSION := 1.36
+MAKE_VERSION := 1.39
 
 # Define variables
 TF_MORE_ARGS := -compact-warnings
