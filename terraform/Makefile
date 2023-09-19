@@ -14,7 +14,7 @@ export
 
 # Define live updates
 MAKE_REPOSITORY := https://raw.githubusercontent.com/thereisnotime/xxMake/master/terraform/Makefile
-MAKE_VERSION := 1.49
+MAKE_VERSION := 1.50
 
 # Define variables
 TF_MORE_ARGS := -compact-warnings
@@ -63,11 +63,17 @@ check-env:
 
 .PHONY: update-self
 update-self:
-	@echo "Fetching current and new MAKE_VERSION..."; \
-	curl --connect-timeout 5 -H 'Cache-Control: no-cache, no-store' --silent -o Makefile.new $(MAKE_REPOSITORY); \
-	CURRENT_VERSION_DOT=$$(grep '^MAKE_VERSION := ' Makefile | awk '{print $$3}'); \
+	@IS_TEMPLATE=$$(if grep -q "include " Makefile; then echo "1"; else echo "0"; fi); \
+	MAIN_MAKEFILE_DIR="."; \
+	if [ $$IS_TEMPLATE -eq 1 ]; then \
+		MAIN_MAKEFILE_DIR=$$(grep "include " Makefile | awk '{gsub(/include /, "", $$0); print $$0}' ); \
+		echo "This is a template Makefile. Updating the main Makefile in $$MAIN_MAKEFILE_DIR."; \
+	fi; \
+	echo "Fetching current and new MAKE_VERSION..."; \
+	curl --connect-timeout 5 -H 'Cache-Control: no-cache, no-store' --silent -o "$$MAIN_MAKEFILE_DIR/Makefile.new" $(MAKE_REPOSITORY); \
+	CURRENT_VERSION_DOT=$$(grep '^MAKE_VERSION := ' $$MAIN_MAKEFILE_DIR/Makefile | awk '{print $$3}'); \
 	CURRENT_VERSION=$$(echo "$$CURRENT_VERSION_DOT" | tr -d '.'); \
-	NEW_VERSION_DOT=$$(grep '^MAKE_VERSION := ' Makefile.new | awk '{print $$3}'); \
+	NEW_VERSION_DOT=$$(grep '^MAKE_VERSION := ' $$MAIN_MAKEFILE_DIR/Makefile.new | awk '{print $$3}'); \
 	NEW_VERSION=$$(echo "$$NEW_VERSION_DOT" | tr -d '.'); \
 	echo "Current MAKE_VERSION is $(COLOR_YELLOW)$$CURRENT_VERSION_DOT$(COLOR_DEFAULT)"; \
 	echo "New MAKE_VERSION is $(COLOR_GREEN)$$NEW_VERSION_DOT$(COLOR_DEFAULT)"; \
