@@ -11,7 +11,7 @@ Place it in your Docker project folder next to your main.tf or add a template th
 Just place the file in your project:
 
 ```bash
-curl -o https://raw.githubusercontent.com/thereisnotime/xxMake/master/docker/Makefile
+curl -s https://raw.githubusercontent.com/thereisnotime/xxMake/master/docker/Makefile -o Makefile
 ```
 
 And do
