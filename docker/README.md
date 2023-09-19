@@ -38,3 +38,11 @@ If you want to use it in a single repo and not have it copied few times you can 
 #!make
 include ../../Makefile
 ```
+
+## Todos
+
+The following tasks are in the roadmap:
+
+- [ ] Add option to work with a local .env that contains a specific docker container registry configuration.
+- [ ] Finish the open TODO's in the Makefile.
+- [ ] Add option to autogenerate yaml files for Docker tests with ChatGPT if there is a key provided.

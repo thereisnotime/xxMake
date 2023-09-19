@@ -42,3 +42,13 @@ If you want to use it in a single repo and not have it copied few times you can 
 #!make
 include ../../Makefile
 ```
+
+## Todos
+
+The following tasks are in the roadmap:
+
+- [ ] Add examples for every make target with description.
+- [ ] Move tfk8s to Docker.
+- [ ] Wrap more TF commands like refresh, workspace and others that are missing.
+- [ ] Improve docs and graph targets.
+- [ ] Add soft fail on missing .env file.
