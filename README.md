@@ -2,6 +2,8 @@
 
 A biased Makefile collection for various use cases.
 
+[![Lint Makefiles](https://github.com/thereisnotime/xxMake/actions/workflows/ci.yml/badge.svg)](https://github.com/thereisnotime/xxMake/actions/workflows/ci.yml)
+
 ## Features
 
 - Autoupdate from the repository.
