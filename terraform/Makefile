@@ -14,7 +14,7 @@ export
 
 # Define live updates
 MAKE_REPOSITORY := https://raw.githubusercontent.com/thereisnotime/xxMake/master/terraform/Makefile
-MAKE_VERSION := 1.37
+MAKE_VERSION := 1.38
 
 # Define variables
 TF_MORE_ARGS := -compact-warnings
@@ -63,12 +63,19 @@ check-env:
 
 .PHONY: update-self
 update-self:
-	@echo "$(COLOR_GREEN)Updating Makefile...(COLOR_DEFAULT)"
-	@CURRENT_VERSION=$(shell grep 'MAKE_VERSION := ' Makefile | cut -d ' ' -f 3)
-	@curl -o Makefile.new $(MAKE_REPOSITORY)
-	@NEW_VERSION=$(shell grep 'MAKE_VERSION := ' Makefile.new | cut -d ' ' -f 3)
-	@echo "$(COLOR_GREEN)from version $$CURRENT_VERSION to $$NEW_VERSION$(COLOR_DEFAULT)"
-	@mv Makefile.new Makefile
+	@echo "Fetching current and new MAKE_VERSION..."
+	@curl --silent -o Makefile.new $(MAKE_REPOSITORY)
+	@CURRENT_VERSION=$$(grep '^MAKE_VERSION := ' Makefile | cut -d ' ' -f 3); \
+	echo "Current MAKE_VERSION is $(COLOR_GREEN)$$CURRENT_VERSION$(COLOR_DEFAULT)"
+	@NEW_VERSION=$$(grep '^MAKE_VERSION := ' Makefile.new | cut -d ' ' -f 3); \
+	echo "New MAKE_VERSION is $(COLOR_GREEN)$$NEW_VERSION$(COLOR_DEFAULT)"
+	@if [ "$$NEW_VERSION" \> "$$CURRENT_VERSION" ]; then \
+		echo -e "$(COLOR_GREEN)Updating Makefile from version $(COLOR_YELLOW)$$CURRENT_VERSION$(COLOR_GREEN) to $$NEW_VERSION$(COLOR_DEFAULT)"; \
+		mv Makefile.new Makefile; \
+	else \
+		echo "Current version is up-to-date. Deleting the downloaded Makefile."; \
+		rm Makefile.new; \
+	fi
 
 .PHONY: init
 init: check-env
