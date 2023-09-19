@@ -1,7 +1,9 @@
 #!make
-ENV := $(PWD)/.env
-include $(ENV)
-export
+ifneq ($(wildcard $(PWD)/.env),)
+    ENV := $(PWD)/.env
+    include $(ENV)
+    export
+endif
 
 #########################################
 # TINT - Terraform Makefile
@@ -56,10 +58,6 @@ help:
 	@echo "  $(COLOR_YELLOW)upgrade$(COLOR_DEFAULT)     Performs terraform init -upgrade"
 	@echo "  $(COLOR_YELLOW)update-self$(COLOR_DEFAULT) Updates Makefile to latest"
 
-.PHONY: check-env
-check-env:
-	@test -f .env || (echo "ERROR: .env file not found." && exit 1)
-
 .PHONY: update-self
 update-self:
 	@IS_TEMPLATE=$$(if grep -q "include " Makefile; then echo "1"; else echo "0"; fi); \
@@ -86,7 +84,7 @@ update-self:
 	fi
 
 .PHONY: init
-init: check-env
+init: 
 	@echo "$(COLOR_GREEN)Initializing Terraform...$(COLOR_DEFAULT)"
 	terraform init $(TF_MORE_ARGS)
 
@@ -101,7 +99,7 @@ fmt:
 	terraform fmt -recursive $(PWD)
 
 .PHONY: plan
-plan: check-env init fmt
+plan:  init fmt
 	@echo "$(COLOR_YELLOW)Generating Terraform plan...$(COLOR_DEFAULT)"
 	terraform plan $(TF_MORE_ARGS)
 
@@ -122,12 +120,12 @@ graph:
 	terraform graph | dot -Tsvg > graph.svg
 
 PHONY: state
-state: check-env
+state: 
 	@echo "$(COLOR_YELLOW)Showing current Terraform state...$(COLOR_DEFAULT)"
 	terraform state list
 
 .PHONY: info
-info: check-env
+info: 
 	@echo "$(COLOR_GREEN)Showing providers...$(COLOR_DEFAULT)"
 	terraform providers
 	@echo "$(COLOR_GREEN)Showing workspaces...$(COLOR_DEFAULT)"
@@ -143,17 +141,17 @@ apply: init fmt
 	terraform apply -parallelism=$(TF_PARALLELISM) $(TF_MORE_ARGS) ${TF_AUTO_APPLY}
 
 .PHONY: console
-console: check-env
+console: 
 	@echo "$(COLOR_GREEN)Opening console...$(COLOR_DEFAULT)"
 	terraform console $(TF_MORE_ARGS)
 
 .PHONY: providers
-providers: check-env
+providers: 
 	@echo "$(COLOR_GREEN)Getting providers...$(COLOR_DEFAULT)"
 	terraform providers
 
 .PHONY: taint
-taint: check-env
+taint: 
 	@echo "$(COLOR_GREEN)Tainting: $(strip $(filter-out $@,$(MAKECMDGOALS)))...$(COLOR_DEFAULT)"
 	terraform taint $(strip $(filter-out $@,$(MAKECMDGOALS)))
 
@@ -167,7 +165,7 @@ taintm:
 	done
 
 .PHONY: untaint
-untaint: check-env
+untaint: 
 	@echo "$(COLOR_GREEN)Untainting...$(COLOR_DEFAULT)"
 	terraform untaint $(strip $(filter-out $@,$(MAKECMDGOALS)))
 
