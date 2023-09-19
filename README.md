@@ -16,3 +16,5 @@ Most of the requirements are:
 - Make
 - Docker (for some of the fancier targets)
 - grep
+- awk
+- sed
