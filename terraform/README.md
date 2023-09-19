@@ -19,3 +19,13 @@ And do
 ```bash
 make help
 ```
+
+## Update
+
+NOTE: GitHub has a 5 minute cache of raw files.
+
+Do:
+
+```bash
+make update-self
+```
