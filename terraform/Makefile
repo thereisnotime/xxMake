@@ -4,9 +4,8 @@ include $(ENV)
 export
 
 #########################################
-# TF Makefile
+# TINT - Terraform Makefile
 #########################################
-
 # TODO: Solve case when .env does not exist.
 
 # Config
@@ -14,7 +13,7 @@ export
 
 # Define live updates
 MAKE_REPOSITORY := https://raw.githubusercontent.com/thereisnotime/xxMake/master/terraform/Makefile
-MAKE_VERSION := 1.51
+MAKE_VERSION := 1.52
 
 # Define variables
 TF_MORE_ARGS := -compact-warnings
