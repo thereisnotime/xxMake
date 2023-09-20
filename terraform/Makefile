@@ -15,7 +15,7 @@ endif
 
 # Define live updates
 MAKE_REPOSITORY := https://raw.githubusercontent.com/thereisnotime/xxMake/master/terraform/Makefile
-MAKE_VERSION := 1.52
+MAKE_VERSION := 1.53
 
 # Define variables
 TF_MORE_ARGS := -compact-warnings
@@ -52,6 +52,7 @@ help:
 	@echo "  $(COLOR_YELLOW)providers$(COLOR_DEFAULT)   Lists TF providers and their module dependencies (FAST)"
 	@echo "  $(COLOR_YELLOW)megalint$(COLOR_DEFAULT)    Run Mega Linter on the whole repo (SLOW)"
 	@echo "  $(COLOR_YELLOW)info$(COLOR_DEFAULT)        Shows providers, output, state and more"
+	@echo "  $(COLOR_YELLOW)statepull$(COLOR_DEFAULT)   Prints the current tfstate even if it is remote"
 	@echo "  $(COLOR_YELLOW)tfk8s$(COLOR_DEFAULT)       Converts K8s yaml 'input.yaml' to Terraform resource 'converted.tf'"
 	@echo "  $(COLOR_YELLOW)req$(COLOR_DEFAULT)         Checks local dependency requirements"
 	@echo "  $(COLOR_YELLOW)rmstate$(COLOR_DEFAULT)     Deletes the remote state. Use with caution!"
@@ -183,6 +184,11 @@ upgrade:
 rmstate: 
 	@echo "$(COLOR_GREEN)Deleting remote state...$(COLOR_DEFAULT)"
 	terraform state rm $(strip $(filter-out $@,$(MAKECMDGOALS)))
+
+.PHONY: statepull
+statepull: 
+	@echo "$(COLOR_GREEN)Pulling Terraform state...$(COLOR_DEFAULT)"
+	terraform state pull
 
 .PHONY: import
 import: 
