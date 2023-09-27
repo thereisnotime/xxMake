@@ -15,12 +15,12 @@ endif
 
 # Define live updates
 MAKE_REPOSITORY := https://raw.githubusercontent.com/thereisnotime/xxMake/master/terraform/Makefile
-MAKE_VERSION := 1.53
+MAKE_VERSION := 1.54
 
 # Define variables
 TF_MORE_ARGS := -compact-warnings
 TF_AUTO_APPLY := -auto-approve
-TF_PARALLELISM := 10
+TF_PARALLELISM := 20
 TF_PLAN := ""
 
 # Define colors
@@ -57,6 +57,7 @@ help:
 	@echo "  $(COLOR_YELLOW)req$(COLOR_DEFAULT)         Checks local dependency requirements"
 	@echo "  $(COLOR_YELLOW)rmstate$(COLOR_DEFAULT)     Deletes the remote state. Use with caution!"
 	@echo "  $(COLOR_YELLOW)upgrade$(COLOR_DEFAULT)     Performs terraform init -upgrade"
+	@echo "  $(COLOR_YELLOW)migrate$(COLOR_DEFAULT)     Performs terraform init -migrate-state"
 	@echo "  $(COLOR_YELLOW)update-self$(COLOR_DEFAULT) Updates Makefile to latest"
 
 .PHONY: update-self
@@ -88,6 +89,11 @@ update-self:
 init: 
 	@echo "$(COLOR_GREEN)Initializing Terraform...$(COLOR_DEFAULT)"
 	terraform init $(TF_MORE_ARGS)
+
+.PHONY: migrate
+migrate: 
+	@echo "$(COLOR_GREEN)Initializing Terraform...$(COLOR_DEFAULT)"
+	terraform init -migrate-state
 
 .PHONY: validate
 validate: 
