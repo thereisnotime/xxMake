@@ -196,7 +196,7 @@ rmstate:
 .PHONY: statebackup
 statebackup: 
 	@echo "$(COLOR_GREEN)Backing up Terraform state...$(COLOR_DEFAULT)"
-	@terraform state pull | tail -n+2 > default_$(shell date '+%Y%m%d%H%M%S').tfstate
+	@terraform state pull | tail -n+1 > default_$(shell date '+%Y%m%d%H%M%S').tfstate
 
 .PHONY: statepull
 statepull: 
