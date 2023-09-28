@@ -15,7 +15,7 @@ endif
 
 # Define live updates
 MAKE_REPOSITORY := https://raw.githubusercontent.com/thereisnotime/xxMake/master/terraform/Makefile
-MAKE_VERSION := 1.59
+MAKE_VERSION := 1.60
 
 # Define variables
 TF_MORE_ARGS := -compact-warnings
