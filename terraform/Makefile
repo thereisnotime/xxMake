@@ -15,7 +15,7 @@ endif
 
 # Define live updates
 MAKE_REPOSITORY := https://raw.githubusercontent.com/thereisnotime/xxMake/master/terraform/Makefile
-MAKE_VERSION := 1.58
+MAKE_VERSION := 1.59
 
 # Define variables
 TF_MORE_ARGS := -compact-warnings
@@ -196,7 +196,7 @@ rmstate:
 .PHONY: statebackup
 statebackup: 
 	@echo "$(COLOR_GREEN)Backing up Terraform state...$(COLOR_DEFAULT)"
-	@terraform state pull | tail -n+3 > default_$(shell date '+%Y%m%d%H%M%S').tfstate
+	@terraform state pull | tail -n+2 > default_$(shell date '+%Y%m%d%H%M%S').tfstate
 
 .PHONY: statepull
 statepull: 
