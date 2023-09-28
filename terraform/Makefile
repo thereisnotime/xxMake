@@ -15,7 +15,7 @@ endif
 
 # Define live updates
 MAKE_REPOSITORY := https://raw.githubusercontent.com/thereisnotime/xxMake/master/terraform/Makefile
-MAKE_VERSION := 1.57
+MAKE_VERSION := 1.58
 
 # Define variables
 TF_MORE_ARGS := -compact-warnings
@@ -206,7 +206,7 @@ statepull:
 .PHONY: statepush
 statepush: 
 	@echo "$(COLOR_GREEN)Pushing Terraform state...$(COLOR_DEFAULT)"
-	terraform state push $(TF_MORE_ARGS)
+	terraform state push $(strip $(filter-out $@,$(MAKECMDGOALS)))
 
 .PHONY: import
 import: 
