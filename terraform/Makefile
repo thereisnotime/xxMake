@@ -15,7 +15,7 @@ endif
 
 # Define live updates
 MAKE_REPOSITORY := https://raw.githubusercontent.com/thereisnotime/xxMake/master/terraform/Makefile
-MAKE_VERSION := 1.60
+MAKE_VERSION := 1.61
 
 # Define variables
 TF_MORE_ARGS := -compact-warnings
@@ -40,6 +40,7 @@ help:
 	@echo "  $(COLOR_YELLOW)destroy$(COLOR_DEFAULT)     Destroy Terraform resources"
 	@echo "  $(COLOR_YELLOW)taint$(COLOR_DEFAULT)       Taint Terraform resources"
 	@echo "  $(COLOR_YELLOW)taintm$(COLOR_DEFAULT)      Taint whole Terraform module"
+	@echo "  $(COLOR_YELLOW)untaintm$(COLOR_DEFAULT)    Untaint whole Terraform module"
 	@echo "  $(COLOR_YELLOW)untaint$(COLOR_DEFAULT)     Untaint Terraform resources"
 	@echo "  $(COLOR_YELLOW)console$(COLOR_DEFAULT)     Open Terraform console"
 	@echo "  $(COLOR_YELLOW)clean$(COLOR_DEFAULT)       Clean up Terraform artifacts"
@@ -171,6 +172,15 @@ taintm:
 	for addr in $$addresses ;\
 	do \
 		terraform taint "$$addr" ;\
+	done
+
+.PHONY: untaintm
+untaintm:
+	@echo "Untainting module: $(strip $(filter-out $@,$(MAKECMDGOALS)))"
+	@addresses=$$(terraform state list "module.$(strip $(filter-out $@,$(MAKECMDGOALS)))") ;\
+	for addr in $$addresses ;\
+	do \
+		terraform untaint "$$addr" ;\
 	done
 
 .PHONY: untaint
