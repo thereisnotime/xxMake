@@ -15,7 +15,7 @@ endif
 
 # Define live updates
 MAKE_REPOSITORY := https://raw.githubusercontent.com/thereisnotime/xxMake/master/terraform/Makefile
-MAKE_VERSION := 1.61
+MAKE_VERSION := 1.62
 
 # Define variables
 TF_MORE_ARGS := -compact-warnings
@@ -58,6 +58,7 @@ help:
 	@echo "  $(COLOR_YELLOW)statebackup$(COLOR_DEFAULT) Downloads the remote state into a local file as default_[timestamp].tfstate"
 	@echo "  $(COLOR_YELLOW)tfk8s$(COLOR_DEFAULT)       Converts K8s yaml 'input.yaml' to Terraform resource 'converted.tf'"
 	@echo "  $(COLOR_YELLOW)req$(COLOR_DEFAULT)         Checks local dependency requirements"
+	@echo "  $(COLOR_YELLOW)refresh$(COLOR_DEFAULT)     Performs terraform refresh"
 	@echo "  $(COLOR_YELLOW)rmstate$(COLOR_DEFAULT)     Deletes the remote state. Use with caution!"
 	@echo "  $(COLOR_YELLOW)upgrade$(COLOR_DEFAULT)     Performs terraform init -upgrade"
 	@echo "  $(COLOR_YELLOW)migrate$(COLOR_DEFAULT)     Performs terraform init -migrate-state"
@@ -192,6 +193,11 @@ untaint:
 destroy: 
 	@echo "$(COLOR_GREEN)Destroying Terraform resources...$(COLOR_DEFAULT)"
 	terraform destroy -parallelism=$(TF_PARALLELISM) $(TF_MORE_ARGS)
+
+.PHONY: refresh
+refresh: 
+	@echo "$(COLOR_GREEN)Refreshing Terraform resources...$(COLOR_DEFAULT)"
+	terraform refresh $(TF_MORE_ARGS)
 
 .PHONY: upgrade
 upgrade: 
