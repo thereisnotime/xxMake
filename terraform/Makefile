@@ -9,13 +9,14 @@ endif
 # TINT - Terraform Makefile
 #########################################
 # TODO: Solve case when .env does not exist.
-
+# TODO: Solve issue when not using two levels for parent.
+# TODO: Finish blastradius to offer https://github.com/28mm/blast-radius/blob/master/doc/embedded.md.
 # Config
 # SHELL := /bin/bash
 
 # Define live updates
 MAKE_REPOSITORY := https://raw.githubusercontent.com/thereisnotime/xxMake/master/terraform/Makefile
-MAKE_VERSION := 1.62
+MAKE_VERSION := 1.64
 
 # Define variables
 TF_MORE_ARGS := -compact-warnings
@@ -45,6 +46,8 @@ help:
 	@echo "  $(COLOR_YELLOW)console$(COLOR_DEFAULT)     Open Terraform console"
 	@echo "  $(COLOR_YELLOW)clean$(COLOR_DEFAULT)       Clean up Terraform artifacts"
 	@echo "  $(COLOR_YELLOW)graph$(COLOR_DEFAULT)       Generates graph of all dependencies from the plan"
+	@echo "  $(COLOR_YELLOW)rover$(COLOR_DEFAULT)       Render graph from plan and visualize in Rover"
+	@echo "  $(COLOR_YELLOW)blastradius$(COLOR_DEFAULT) Render graph from plan and visualize in Blast Radius"
 	@echo "  $(COLOR_YELLOW)docs$(COLOR_DEFAULT)        Generates documentation (README.md) for the modules"
 	@echo "  $(COLOR_YELLOW)cost$(COLOR_DEFAULT)        Calculate estimated infrastructure costs"
 	@echo "  $(COLOR_YELLOW)tfsec$(COLOR_DEFAULT)       Run tfsec to check for security issues"
@@ -124,6 +127,25 @@ unlock:
 		echo "Lock ID: $$PLAN"; \
 		terraform force-unlock -force $$PLAN; \
 	fi
+
+PHONE: blastradius
+blastradius:
+	@echo "$(COLOR_YELLOW)Visualizing resources with Blast Radius...$(COLOR_DEFAULT)"
+	terraform init
+	@last_dir=`basename $$PWD`; \
+	parent_dir=`basename $$(dirname $$PWD)`; \
+	dir_suffix="$$parent_dir/$$last_dir"; \
+	docker run --rm -it -p 5000:5000 -v $(PWD)../../../:/data:ro --security-opt apparmor:unconfined --cap-add=SYS_ADMIN 28mm/blast-radius --serve /data/$$dir_suffix
+	xdg-open http://localhost:5000
+
+PHONE: rover
+rover:
+	@echo "$(COLOR_YELLOW)Visualizing resources with Rover...$(COLOR_DEFAULT)"
+	terraform init
+	terraform plan -out plan.out
+	terraform show -json plan.out > plan.json
+	docker run --rm -it -p 9000:9000 -v $(PWD)/plan.json:/src/plan.json im2nguyen/rover:latest -planJSONPath=plan.json
+	xdg-open http://localhost:9000
 
 PHONE: graph
 graph:
