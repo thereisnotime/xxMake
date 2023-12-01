@@ -233,7 +233,7 @@ rmstate:
 	terraform state rm $(strip $(filter-out $@,$(MAKECMDGOALS)))
 
 .PHONY: mvstate
-rmstate: 
+mvstate: 
 	@echo "$(COLOR_GREEN)Moving state...$(COLOR_DEFAULT)"
 	terraform state mv $(strip $(filter-out $@,$(MAKECMDGOALS)))
 
