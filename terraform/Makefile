@@ -16,7 +16,7 @@ endif
 
 # Define live updates
 MAKE_REPOSITORY := https://raw.githubusercontent.com/thereisnotime/xxMake/master/terraform/Makefile
-MAKE_VERSION := 1.66
+MAKE_VERSION := 1.67
 
 # Define variables
 TF_MORE_ARGS := -compact-warnings
@@ -164,6 +164,8 @@ info:
 	terraform providers
 	@echo "$(COLOR_GREEN)Showing workspaces...$(COLOR_DEFAULT)"
 	terraform workspace list
+	@echo "$(COLOR_GREEN)Showing state...$(COLOR_DEFAULT)"
+	terraform state list
 	@echo "$(COLOR_GREEN)Showing version...$(COLOR_DEFAULT)"
 	terraform --version
 	@echo "$(COLOR_GREEN)Showing outputs...$(COLOR_DEFAULT)"
@@ -229,8 +231,13 @@ upgrade:
 
 .PHONY: rmstate
 rmstate: 
-	@echo "$(COLOR_GREEN)Deleting remote state...$(COLOR_DEFAULT)"
+	@echo "$(COLOR_GREEN)Deleting resource/module from remote state...$(COLOR_DEFAULT)"
 	terraform state rm $(strip $(filter-out $@,$(MAKECMDGOALS)))
+
+.PHONY: rmstateall
+rmstateall: 
+	@echo "$(COLOR_GREEN)Deleting all resources and modules from remote state...$(COLOR_DEFAULT)"
+	terraform state rm $$(terraform state list)
 
 .PHONY: mvstate
 mvstate: 
