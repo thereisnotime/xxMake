@@ -16,7 +16,7 @@ endif
 
 # Define live updates
 MAKE_REPOSITORY := https://raw.githubusercontent.com/thereisnotime/xxMake/master/terraform/Makefile
-MAKE_VERSION := 1.67
+MAKE_VERSION := 1.68
 
 # Define variables
 TF_MORE_ARGS := -compact-warnings
@@ -41,8 +41,10 @@ help:
 	@echo "  $(COLOR_YELLOW)destroy$(COLOR_DEFAULT)     Destroy Terraform resources"
 	@echo "  $(COLOR_YELLOW)taint$(COLOR_DEFAULT)       Taint Terraform resources"
 	@echo "  $(COLOR_YELLOW)taintm$(COLOR_DEFAULT)      Taint whole Terraform module"
+	@echo "  $(COLOR_YELLOW)taintfzf$(COLOR_DEFAULT)    Taint Terraform resources with fzf"
 	@echo "  $(COLOR_YELLOW)untaintm$(COLOR_DEFAULT)    Untaint whole Terraform module"
 	@echo "  $(COLOR_YELLOW)untaint$(COLOR_DEFAULT)     Untaint Terraform resources"
+	@echo "  $(COLOR_YELLOW)untaintfzf$(COLOR_DEFAULT)  Untaint Terraform resources with fzf"
 	@echo "  $(COLOR_YELLOW)console$(COLOR_DEFAULT)     Open Terraform console"
 	@echo "  $(COLOR_YELLOW)clean$(COLOR_DEFAULT)       Clean up Terraform artifacts"
 	@echo "  $(COLOR_YELLOW)graph$(COLOR_DEFAULT)       Generates graph of all dependencies from the plan"
@@ -200,6 +202,11 @@ taintm:
 		terraform taint "$$addr" ;\
 	done
 
+.PHONY: taintfzf
+taintfzf: 
+	@echo "$(COLOR_GREEN)Tainting with fzf...$(COLOR_DEFAULT)"
+	terraform state list | fzf | xargs -n 1 terraform taint
+
 .PHONY: untaintm
 untaintm:
 	@echo "Untainting module: $(strip $(filter-out $@,$(MAKECMDGOALS)))"
@@ -213,6 +220,11 @@ untaintm:
 untaint: 
 	@echo "$(COLOR_GREEN)Untainting...$(COLOR_DEFAULT)"
 	terraform untaint $(strip $(filter-out $@,$(MAKECMDGOALS)))
+
+.PHONY: untaintfzf
+untaintfzf: 
+	@echo "$(COLOR_GREEN)Untainting with fzf...$(COLOR_DEFAULT)"
+	terraform state list | fzf | xargs -n 1 terraform untaint
 
 .PHONY: destroy
 destroy: 
