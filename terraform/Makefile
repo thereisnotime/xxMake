@@ -16,7 +16,7 @@ endif
 
 # Define live updates
 MAKE_REPOSITORY := https://raw.githubusercontent.com/thereisnotime/xxMake/master/terraform/Makefile
-MAKE_VERSION := 1.68
+MAKE_VERSION := 1.69
 
 # Define variables
 TF_MORE_ARGS := -compact-warnings
@@ -65,6 +65,7 @@ help:
 	@echo "  $(COLOR_YELLOW)req$(COLOR_DEFAULT)         Checks local dependency requirements"
 	@echo "  $(COLOR_YELLOW)refresh$(COLOR_DEFAULT)     Performs terraform refresh"
 	@echo "  $(COLOR_YELLOW)rmstate$(COLOR_DEFAULT)     Deletes the remote state. Use with caution!"
+	@echo "  $(COLOR_YELLOW)rmstateall$(COLOR_DEFAULT)  Deletes all of the remote state. Use with caution!"
 	@echo "  $(COLOR_YELLOW)mvstate$(COLOR_DEFAULT)     Moves resource between states. Use with caution!"
 	@echo "  $(COLOR_YELLOW)upgrade$(COLOR_DEFAULT)     Performs terraform init -upgrade"
 	@echo "  $(COLOR_YELLOW)migrate$(COLOR_DEFAULT)     Performs terraform init -migrate-state"
