@@ -15,7 +15,7 @@ If you want to use infracost, make sure to have the $HOME/.config/infracost/cred
 Just place the file in your project:
 
 ```bash
-curl -s https://raw.githubusercontent.com/thereisnotime/xxMake/master/docker/Makefile -o Makefile
+curl -s https://raw.githubusercontent.com/thereisnotime/xxMake/master/terraform/Makefile -o Makefile
 ```
 
 And do
