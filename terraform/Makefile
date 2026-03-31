@@ -16,7 +16,7 @@ endif
 
 # Define live updates
 MAKE_REPOSITORY := https://raw.githubusercontent.com/thereisnotime/xxMake/master/terraform/Makefile
-MAKE_VERSION := 1.69
+MAKE_VERSION := 1.70
 
 # Define variables
 TF_MORE_ARGS := -compact-warnings
@@ -38,6 +38,7 @@ help:
 	@echo "  $(COLOR_YELLOW)fmt$(COLOR_DEFAULT)         Format Terraform configuration"
 	@echo "  $(COLOR_YELLOW)plan$(COLOR_DEFAULT)        Generate Terraform plan"
 	@echo "  $(COLOR_YELLOW)apply$(COLOR_DEFAULT)       Apply Terraform changes"
+	@echo "  $(COLOR_YELLOW)tapply$(COLOR_DEFAULT)      Apply Terraform changes for a specific target"
 	@echo "  $(COLOR_YELLOW)destroy$(COLOR_DEFAULT)     Destroy Terraform resources"
 	@echo "  $(COLOR_YELLOW)taint$(COLOR_DEFAULT)       Taint Terraform resources"
 	@echo "  $(COLOR_YELLOW)taintm$(COLOR_DEFAULT)      Taint whole Terraform module"
@@ -178,6 +179,11 @@ info:
 apply: init fmt
 	@echo "$(COLOR_GREEN)Applying Terraform plan...$(COLOR_DEFAULT)"
 	terraform apply -parallelism=$(TF_PARALLELISM) $(TF_MORE_ARGS) ${TF_AUTO_APPLY}
+
+.PHONY: tapply
+tapply: init fmt
+	@echo "$(COLOR_GREEN)Applying Terraform plan for target: $(strip $(filter-out $@,$(MAKECMDGOALS)))...$(COLOR_DEFAULT)"
+	terraform apply -target=$(strip $(filter-out $@,$(MAKECMDGOALS))) -parallelism=$(TF_PARALLELISM) $(TF_MORE_ARGS) ${TF_AUTO_APPLY}
 
 .PHONY: console
 console: 
